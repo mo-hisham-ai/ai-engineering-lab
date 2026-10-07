@@ -4,13 +4,7 @@ from main import chunk_text, client, embed, search
 
 MODEL = "gemini-3.5-flash-lite"
 
-SYSTEM_PROMPT = (
-    "You answer questions using ONLY the context provided. "
-    "If the answer is not in the context, reply exactly: "
-    "I don't know based on the document. "
-    "Never use outside knowledge. Keep the answer short."
-)
-
+SYSTEM_PROMPT = "You are a helpful assistant."
 
 def answer(question: str, chunks: list[str], vectors: list[list[float]]):
     top = search(question, chunks, vectors, top_k=3)
