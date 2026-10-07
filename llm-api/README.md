@@ -9,6 +9,8 @@ Python script that sends a question to the Gemini API and returns structured JSO
 - Structured JSON output with `response_mime_type`
 - Retry with exponential backoff on 503 errors
 - Choosing a model by listing the available ones (`list_models.py`)
+- Validating LLM output with Pydantic (`BaseModel`, `Literal`)
+- Writing tests with pytest (valid case, missing field, invalid value)
 
 ## Run
 1. `py -m pip install google-genai python-dotenv`
