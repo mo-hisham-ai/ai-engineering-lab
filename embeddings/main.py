@@ -10,9 +10,9 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 EMBED_MODEL = "gemini-embedding-001"
 
 texts = [
-    "كيف اشتراك في حسابي",
-    "ماهي اشهر 5 مدن",
-    "ماهي محتوايات بيتزا",
+    "How do I reset my password?",
+    "I forgot my login credentials",
+    "What is the best pizza recipe?",
 ]
 
 result = client.models.embed_content(model=EMBED_MODEL, contents=texts)
