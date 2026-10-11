@@ -1,5 +1,5 @@
 import os
-
+import hashlib
 import chromadb
 from dotenv import load_dotenv
 from google import genai
@@ -11,6 +11,12 @@ EMBED_MODEL = "gemini-embedding-001"
 
 db = chromadb.PersistentClient(path="chroma_db")
 collection = db.get_or_create_collection(name="handbook")
+HASH_FILE = os.path.join("chroma_db", "doc.hash")
+
+
+def file_hash(path: str) -> str:
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
 
 
 def embed(texts: list[str]) -> list[list[float]]:
@@ -23,9 +29,20 @@ def chunk_by_paragraph(text: str) -> list[str]:
 
 
 def index_document(path: str) -> None:
-    if collection.count() > 0:
+    current = file_hash(path)
+    stored = None
+    if os.path.exists(HASH_FILE):
+        with open(HASH_FILE) as f:
+            stored = f.read().strip()
+
+    if collection.count() > 0 and stored == current:
         print(f"Already indexed: {collection.count()} chunks (no embedding needed)")
         return
+
+    if collection.count() > 0:
+        print("Document changed, re-indexing...")
+        collection.delete(ids=collection.get()["ids"])
+
     with open(path, encoding="utf-8") as f:
         chunks = chunk_by_paragraph(f.read())
     collection.add(
@@ -34,6 +51,8 @@ def index_document(path: str) -> None:
         embeddings=embed(chunks),
         metadatas=[{"source": path, "chunk": i} for i in range(len(chunks))],
     )
+    with open(HASH_FILE, "w") as f:
+        f.write(current)
     print(f"Indexed {len(chunks)} chunks")
 
 
