@@ -8,7 +8,9 @@ MODEL = "gemini-3.5-flash-lite"
 
 SYSTEM_PROMPT = (
     "You answer questions using ONLY the context provided. "
-    "If the answer is not in the context, reply exactly: "
+    "You may combine facts from the context and do simple arithmetic "
+    "or comparisons with them. "
+    "If the context does not contain the facts needed, reply exactly: "
     "I don't know based on the document. "
     "Never use outside knowledge. Keep the answer short."
 )

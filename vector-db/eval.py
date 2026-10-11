@@ -1,5 +1,5 @@
 import time
-
+import re
 from main import index_document
 from rag import answer
 
@@ -14,6 +14,9 @@ TESTS = [
     {"q": "كم عدد أيام الإجازة السنوية؟", "chunk": 3, "keyword": "25"},
     {"q": "What is the CEO's name?", "chunk": None, "keyword": None},
     {"q": "What is the capital of France?", "chunk": None, "keyword": None},
+    {"q": "Can I take a day off when I feel ill?", "chunk": 4, "keyword": "10"},
+    {"q": "Can I carry over 10 unused leave days?", "chunk": 3, "keyword": r"\b5\b"},
+    {"q": "How many total paid days off do I get, vacation and sick?", "chunk": 3, "keyword": "35"},
 ]
 
 
@@ -30,7 +33,7 @@ def run() -> None:
 
         if t["chunk"] is not None:
             r = t["chunk"] in found
-            a = t["keyword"].lower() in text_low
+            a = re.search(t["keyword"], text, re.IGNORECASE) is not None
             retrieval_ok += r
             answer_ok += a
             status = f"retrieval={'OK' if r else 'FAIL'} answer={'OK' if a else 'FAIL'}"
