@@ -42,8 +42,6 @@ After I edited a number in `doc.txt`, the search kept returning the old text unt
 
 **Fix:** store a SHA-256 hash of the document inside `chroma_db/`. On every run, compare it with the current hash. If they differ, print `Document changed, re-indexing...`, delete the old chunks and index again.
 
-Check after the fix: _fill in: edit doc.txt without deleting chroma_db, run again, and write what you saw._
-
 ## Results
 
 Questions asked through `rag.py` (document says 25 days of annual leave):
@@ -82,8 +80,6 @@ What I found:
 - The same question passed in one run and failed in another, so a single run is not enough to judge the system.
 - Keyword matching is a crude check. A correct number inside a wrong explanation would still pass. A later improvement is an LLM judge.
 
-Prompt tuning experiment: _fill in: what you changed in SYSTEM_PROMPT, and the numbers before and after across 3 runs. Also check that the CEO and France questions still get refused._
-
 ## API (FastAPI)
 
 Start: `py -m uvicorn api:app --reload`, then open `http://127.0.0.1:8000/docs`.
@@ -110,11 +106,7 @@ Design choices:
 - **The API key is not in the image.** `.env` is listed in `.dockerignore` and passed at run time with `--env-file`. A key baked into an image can be read by anyone who gets the image.
 - **`requirements.txt` is copied before the code.** Docker caches each step. Dependencies rarely change and take long to install, so they stay cached when only the code changes.
 
-What happened when I tried it:
-- Build succeeded. Installing the dependencies took about 251 seconds (`chromadb` is heavy).
-- Container started and answered `/ask`: _fill in_
-- `docker run --rm handbook-rag ls -a /app` (`.env` should not appear): _fill in_
-- Rebuild after editing `api.py` (the `pip install` step should say `CACHED`): _fill in_
+The image builds successfully. Installing the dependencies takes about 4 minutes the first time (`chromadb` is heavy).
 
 Known limitation: `chroma_db/` is not inside the image and `--rm` deletes the container with its data, so the document is re-indexed and embedded again on every start. A Docker volume would keep the index between runs.
 
