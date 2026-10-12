@@ -13,7 +13,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Handbook RAG API", lifespan=lifespan)
+app = FastAPI(title="API", lifespan=lifespan)
 
 
 class Question(BaseModel):
